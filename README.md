@@ -1,7 +1,3 @@
-# backend-template
+# Dashboard
 
-Backend - Express
-
-Database - Mongodb
-
-剛開始建立 template 會陸陸續續更新
+建立基本後台 CMS 該有的 API
