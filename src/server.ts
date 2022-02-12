@@ -1,4 +1,5 @@
 import express from "express";
+const cors = require('cors')
 const mongoose = require("mongoose");
 
 // read the env file
@@ -14,6 +15,7 @@ const port = process.env.PORT || 3000
 // middleware
 app.use(express.json()) // 解析 req.body
 app.use(express.urlencoded({ extended: false })) // 可以用 form urlencoded 帶 body
+app.use(cors())
 
 // connect to mongodb
 const dbUrl = process.env.DB_URL;
