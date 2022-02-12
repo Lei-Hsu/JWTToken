@@ -5,19 +5,25 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 // routes
-const productRoute = require("./Routes/productRoute");
+const userRouter = require("./routes/userRouter");
 
 const app = express();
+
+const port = process.env.PORT || 3000
+
+// middleware
+app.use(express.json()) // 解析 req.body
+app.use(express.urlencoded({ extended: false })) // 可以用 form urlencoded 帶 body
 
 // connect to mongodb
 const dbUrl = process.env.DB_URL;
 mongoose
   .connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    app.listen(3000);
+    app.listen(port, () => console.log(`Sever started on port ${port}`));
     console.log("connected tp db");
   })
   .catch((err: any) => console.log(err));
 
 // user routes
-app.use("/product", productRoute);
+app.use("/user", userRouter);
