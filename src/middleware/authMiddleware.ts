@@ -19,7 +19,7 @@ const checkAuth = asyncHandler(async (req: Request, res: Response, next: NextFun
       console.log(error)
       res.status(401)
       res.json({
-        message: 'fail',
+        message: 'Auth fail',
       })
     }
   }
