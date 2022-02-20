@@ -1,4 +1,5 @@
-import express from "express";
+import express from 'express';
+
 const cors = require('cors')
 const mongoose = require("mongoose");
 
@@ -29,3 +30,10 @@ mongoose
 
 // user routes
 app.use("/user", userRouter);
+
+app.all('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Wrong API URL : ${req.originalUrl}`
+  })
+})

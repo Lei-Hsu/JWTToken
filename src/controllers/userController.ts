@@ -1,6 +1,7 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
-const createError = require('http-errors')
+import { ErrorHandler } from '../../utilities/errorHandling';
+
 const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
@@ -18,15 +19,13 @@ const singIn = asyncHandler(async (req: Request, res: Response) => {
   try {
 
     if (!email || !password) {
-      res.status(400)
-      throw new Error('Please Enter Your Account Information')
+      ErrorHandler(res, 'Please Enter Your Account Information', 401)
     }
 
     const userExists = await User.findOne({ email })
 
     if (userExists) {
-      res.status(404)
-      throw new Error('User Exists')
+      ErrorHandler(res, 'User Exists', 401)
     }
 
     const salt = await bcrypt.genSalt(10)
@@ -38,19 +37,14 @@ const singIn = asyncHandler(async (req: Request, res: Response) => {
     })
 
     if (userData) {
-      res.status(400)
-      res.json({
-        message: 'success',
+      res.status(400).json({
+        status: 'success',
         data: userData
       })
     }
 
-  } catch (error) {
-    res.status(404)
-    res.json({
-      message: 'fail',
-      errorMessage: error
-    })
+  } catch (error: any) {
+    ErrorHandler(res, error.message)
   }
 })
 
@@ -65,13 +59,10 @@ const findUser = asyncHandler(async (req: Request, res: Response) => {
         data: userData
       })
     } else {
-      throw new Error('Can not find the user')
+      ErrorHandler(res, 'Can not find the user', 401)
     }
-  } catch (error) {
-    res.status(404)
-    res.json({
-      message: 'fail'
-    })
+  } catch (error: any) {
+    ErrorHandler(res, error.message)
   }
 })
 
@@ -81,7 +72,7 @@ const logIn = asyncHandler(async (req: Request, res: Response) => {
   try {
     const user = await User.findOne({ email })
 
-    if (!user) throw new Error('Email is not correct')
+    if (!user) ErrorHandler(res, 'Email is not correct', 401)
 
     if (user && await bcrypt.compare(password, user.password)) {
       res.status(200)
@@ -94,15 +85,10 @@ const logIn = asyncHandler(async (req: Request, res: Response) => {
         }
       })
     } else {
-      throw new Error('Password is not correct')
+      ErrorHandler(res, 'Password is not correct', 401)
     }
   } catch (error: any) {
-    console.log('error', error)
-    res.status(400)
-    res.json({
-      status: 'fail',
-      message: error
-    })
+    ErrorHandler(res, error.message)
   }
 })
 
